@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>彌月禮盒 宅配單填寫</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #B8860B;
+    --gold-light: #D4A843;
+    --gold-bg: #FDF8EF;
+    --gold-border: #E8D5B0;
+    --cream: #FFFBF3;
+    --warm-gray: #6B5E50;
+    --text: #3D3530;
+    --text-light: #8C7E72;
+    --success: #5B8C5A;
+    --error: #C0392B;
+    --white: #FFFFFF;
+    --shadow-sm: 0 1px 3px rgba(59,53,48,0.06);
+    --shadow-md: 0 4px 12px rgba(59,53,48,0.08);
+    --shadow-lg: 0 8px 24px rgba(59,53,48,0.12);
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--gold-bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding-bottom: 100px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    background: linear-gradient(160deg, #4A3728, #6B5240, #8B6914);
+    color: var(--white);
+    text-align: center;
+    padding: 36px 20px 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: "";
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle at 70% 30%, rgba(212,168,67,0.15) 0%, transparent 60%);
+  }
+  .header-icon {
+    width: 48px; height: 48px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 12px;
+    font-size: 24px;
+    backdrop-filter: blur(10px);
+  }
+  .header h1 { font-size: 24px; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; position: relative; }
+  .header p { font-size: 13px; opacity: 0.8; font-weight: 300; position: relative; }
+  .header .store-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 5px 16px; border-radius: 20px;
+    font-size: 12px; margin-top: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+  }
+
+  .container { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
+
+  .section {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(232,213,176,0.3);
+  }
+  .section-title {
+    font-size: 14px; font-weight: 700; color: var(--gold);
+    margin-bottom: 20px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--gold-border);
+    display: flex; align-items: center; gap: 8px;
+    letter-spacing: 0.5px;
+  }
+  .section-title .icon {
+    width: 28px; height: 28px;
+    background: var(--gold-bg);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .section-title.store { color: #5c6bc0; border-bottom-color: #c5cae9; }
+  .section-title.store .icon { background: #e8eaf6; }
+
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 13px; font-weight: 500; color: var(--warm-gray); margin-bottom: 6px; }
+  .field input, .field select {
+    width: 100%; padding: 14px 16px;
+    border: 1.5px solid #E0D5C8; border-radius: 12px;
+    font-size: 16px; font-family: inherit;
+    background: var(--cream); color: var(--text);
+    transition: all 0.25s ease;
+    -webkit-appearance: none;
+  }
+  .field input::placeholder { color: #C4B8A8; }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: var(--gold);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(184,134,11,0.1);
+  }
+  .field select {
+    background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238C7E72' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 14px center;
+    padding-right: 38px;
+  }
+  .field .hint { font-size: 11px; color: var(--text-light); margin-top: 5px; font-style: italic; }
+  .custom-flavor { margin-top: 8px; display: none; }
+  .custom-flavor.active { display: block; }
+
+  .flavor-row { display: flex; gap: 10px; align-items: flex-start; }
+  .flavor-row .field:first-child { flex: 2; }
+  .flavor-row .field:last-child { flex: 1; }
+
+  .recipient-card {
+    border: 1.5px solid var(--gold-border);
+    border-radius: 14px; padding: 18px;
+    margin-bottom: 14px;
+    background: linear-gradient(to bottom, var(--cream), var(--white));
+    transition: border-color 0.2s;
+  }
+  .recipient-card:hover { border-color: var(--gold-light); }
+  .recipient-card .card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px;
+  }
+  .recipient-card .card-num {
+    font-size: 12px; font-weight: 700; color: var(--gold);
+    background: var(--gold-bg); padding: 3px 12px;
+    border-radius: 20px; letter-spacing: 0.5px;
+  }
+  .btn-remove {
+    background: none; border: 1px solid #E8D5D5;
+    color: var(--error); font-size: 12px;
+    cursor: pointer; padding: 4px 12px;
+    border-radius: 20px; font-family: inherit;
+  }
+
+  .btn {
+    display: block; width: 100%; padding: 14px;
+    border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 600; font-family: inherit;
+    cursor: pointer; transition: all 0.25s ease;
+  }
+  .btn-add {
+    background: var(--white); color: var(--gold);
+    border: 2px dashed var(--gold-border);
+    margin-bottom: 16px; font-size: 15px;
+  }
+  .btn-add:active { background: var(--gold-bg); }
+  .btn-submit {
+    background: linear-gradient(135deg, #4A3728, #6B5240);
+    color: var(--white); font-size: 17px; padding: 18px;
+    box-shadow: var(--shadow-lg); letter-spacing: 1px;
+  }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled {
+    opacity: 0.6; cursor: not-allowed;
+  }
+
+  /* Store setup */
+  .setup-screen { display: none; }
+  .setup-screen.active { display: block; }
+  .setup-header {
+    background: linear-gradient(160deg, #2C3E6B, #3949ab, #5c6bc0);
+    color: var(--white); text-align: center;
+    padding: 36px 20px 28px; position: relative; overflow: hidden;
+  }
+  .setup-header h1 { font-size: 24px; font-weight: 700; position: relative; letter-spacing: 1px; }
+  .setup-header p { font-size: 13px; opacity: 0.8; font-weight: 300; position: relative; margin-top: 6px; }
+  .btn-setup {
+    background: linear-gradient(135deg, #3949ab, #5c6bc0);
+    color: var(--white); font-size: 17px; padding: 18px;
+    box-shadow: 0 4px 12px rgba(57,73,171,0.3); letter-spacing: 1px;
+  }
+  .store-bar {
+    background: linear-gradient(90deg, #E8EAF6, #F3F4FA);
+    padding: 10px 16px; display: none; align-items: center;
+    font-size: 13px; color: #3949ab; border-bottom: 1px solid #D0D4EA;
+  }
+  .store-bar.active { display: flex; }
+  .store-bar .store-info { font-weight: 600; }
+
+  /* Overlay */
+  .overlay {
+    display: none; position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(59,53,48,0.6); z-index: 100;
+  }
+  .overlay.active { display: flex; }
+  .review-panel {
+    background: var(--gold-bg); width: 100%;
+    display: flex; flex-direction: column; height: 100%;
+  }
+  .review-header {
+    background: linear-gradient(160deg, #2E5C2E, #4A7C4A, #5B8C5A);
+    color: var(--white); text-align: center; padding: 28px 20px;
+    flex-shrink: 0;
+  }
+  .review-header h2 { font-size: 20px; margin-bottom: 4px; font-weight: 700; }
+  .review-header p { font-size: 13px; opacity: 0.85; font-weight: 300; }
+  .review-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .review-container { max-width: 500px; margin: 0 auto; padding: 20px 16px; padding-bottom: 20px; }
+  .review-sender, .review-card {
+    background: var(--white); border-radius: 14px; padding: 18px;
+    margin-bottom: 10px; box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(232,213,176,0.3);
+  }
+  .review-card .rc-num {
+    font-size: 11px; color: var(--gold); font-weight: 700;
+    margin-bottom: 10px; letter-spacing: 1px;
+  }
+  .review-card .rc-row, .review-sender .rc-row {
+    display: flex; padding: 5px 0; font-size: 14px;
+  }
+  .review-card .rc-label, .review-sender .rc-label {
+    width: 80px; flex-shrink: 0; color: var(--text-light); font-size: 13px;
+  }
+  .review-card .rc-value, .review-sender .rc-value { flex: 1; font-weight: 500; color: var(--text); }
+
+  /* Compact mode for many recipients */
+  .review-compact .review-card {
+    padding: 12px 14px; margin-bottom: 6px; border-radius: 10px;
+  }
+  .review-compact .review-card .rc-num {
+    font-size: 10px; margin-bottom: 4px;
+  }
+  .review-compact .review-card .rc-row {
+    padding: 2px 0; font-size: 13px;
+  }
+  .review-compact .review-card .rc-label {
+    width: 70px; font-size: 12px;
+  }
+
+  .review-actions {
+    flex-shrink: 0;
+    background: var(--white); padding: 14px 16px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom));
+    display: flex; gap: 10px;
+    box-shadow: 0 -4px 20px rgba(59,53,48,0.1);
+  }
+  .btn-back {
+    flex: 1; background: #F0EBE4; color: var(--warm-gray);
+    padding: 16px; border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer;
+  }
+  .btn-confirm {
+    flex: 2; background: linear-gradient(135deg, #2E5C2E, #5B8C5A);
+    color: var(--white); padding: 16px; border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer;
+    box-shadow: 0 4px 12px rgba(91,140,90,0.3);
+  }
+  .btn-confirm:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* Success */
+  .success-screen { text-align: center; padding: 50px 24px; }
+  .success-screen .checkmark {
+    width: 88px; height: 88px;
+    background: linear-gradient(135deg, #5B8C5A, #7BAF7A);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 42px; color: var(--white);
+    box-shadow: 0 8px 24px rgba(91,140,90,0.3);
+  }
+  .success-screen h2 { font-size: 24px; margin-bottom: 8px; color: #2E5C2E; font-weight: 700; }
+  .success-screen .sub { color: var(--text-light); font-size: 14px; margin-bottom: 28px; }
+
+  .line-reminder {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 24px;
+    margin: 0 auto 24px;
+    max-width: 360px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(232,213,176,0.3);
+    text-align: left;
+  }
+  .line-reminder .lr-title {
+    font-size: 15px; font-weight: 700; color: #06C755;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .line-reminder .lr-icon {
+    width: 32px; height: 32px;
+    background: #06C755; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 18px; font-weight: 700;
+  }
+  .line-reminder p {
+    font-size: 13px; color: var(--text); line-height: 1.8;
+  }
+  .line-reminder .lr-steps {
+    margin-top: 12px; padding: 14px;
+    background: #F0FAF0; border-radius: 10px;
+  }
+  .line-reminder .lr-step {
+    font-size: 13px; color: var(--text);
+    padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .line-reminder .lr-num {
+    width: 22px; height: 22px; flex-shrink: 0;
+    background: #06C755; color: white;
+    border-radius: 50%; font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+  }
+
+  .btn-line {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; max-width: 320px;
+    margin: 0 auto 20px;
+    padding: 16px 24px;
+    background: #06C755;
+    color: white;
+    border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 700; font-family: inherit;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(6,199,85,0.3);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+  .btn-line:active { background: #05b34c; }
+  .btn-line .line-logo {
+    width: 28px; height: 28px;
+    background: white; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 16px; color: #06C755;
+    flex-shrink: 0;
+  }
+
+  .btn-add-more {
+    display: inline-block;
+    background: linear-gradient(135deg, #4A3728, #6B5240);
+    color: var(--white); padding: 16px 40px;
+    border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 600; font-family: inherit;
+    cursor: pointer; box-shadow: var(--shadow-lg);
+    margin-bottom: 12px;
+  }
+  .btn-new {
+    display: block; margin: 16px auto 0;
+    background: none; border: none;
+    color: var(--gold); font-size: 14px; font-family: inherit;
+    cursor: pointer; font-weight: 500;
+  }
+
+  /* Sending state */
+  .sending-overlay {
+    display: none; position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(59,53,48,0.7); z-index: 200;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(6px);
+  }
+  .sending-overlay.active { display: flex; }
+  .sending-box {
+    background: var(--white); border-radius: 20px;
+    padding: 40px; text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid #E0D5C8;
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sending-box p { font-size: 15px; color: var(--text); font-weight: 500; }
+
+  .error-msg { color: var(--error); font-size: 12px; margin-top: 4px; display: none; }
+  .field.has-error input, .field.has-error select { border-color: var(--error); background: #FDF8F7; }
+  .field.has-error .error-msg { display: block; }
+  .count-label { font-size: 12px; color: var(--text-light); margin: 14px 0 8px; font-weight: 600; letter-spacing: 0.5px; }
+
+  /* Import section */
+  .import-section {
+    background: var(--white); border-radius: var(--radius);
+    padding: 24px; margin-bottom: 16px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(232,213,176,0.3);
+  }
+  .import-title {
+    font-size: 14px; font-weight: 700; color: #5c6bc0;
+    margin-bottom: 16px; padding-bottom: 10px;
+    border-bottom: 1px solid #c5cae9;
+    display: flex; align-items: center; gap: 8px;
+    letter-spacing: 0.5px;
+  }
+  .import-title .icon {
+    width: 28px; height: 28px; background: #e8eaf6;
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+  }
+  .import-steps {
+    font-size: 13px; color: var(--text-light); margin-bottom: 16px; line-height: 2;
+  }
+  .import-steps span { color: #5c6bc0; font-weight: 700; }
+  .btn-template {
+    display: inline-block; background: #e8eaf6; color: #3949ab;
+    padding: 10px 20px; border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 600; font-family: inherit;
+    cursor: pointer; margin-bottom: 14px;
+  }
+  .btn-template:active { background: #c5cae9; }
+  .upload-area {
+    border: 2px dashed #c5cae9; border-radius: 12px;
+    padding: 24px; text-align: center;
+    background: #F8F9FE; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .upload-area:hover, .upload-area.dragover { border-color: #5c6bc0; background: #EEF0FA; }
+  .upload-area p { font-size: 14px; color: #5c6bc0; font-weight: 500; }
+  .upload-area .sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
+  .upload-area input[type="file"] { display: none; }
+  .import-result {
+    margin-top: 14px; padding: 12px 16px;
+    background: #F0FAF0; border-radius: 10px;
+    font-size: 13px; color: #2E5C2E; font-weight: 500;
+    display: none;
+  }
+  .import-result.active { display: block; }
+  .import-result.error { background: #FDF0F0; color: var(--error); }
+  .or-divider {
+    text-align: center; margin: 16px 0;
+    font-size: 12px; color: var(--text-light);
+    position: relative;
+  }
+  .or-divider::before, .or-divider::after {
+    content: ""; position: absolute; top: 50%;
+    width: 40%; height: 1px; background: #E0D5C8;
+  }
+  .or-divider::before { left: 0; }
+  .or-divider::after { right: 0; }
+</style>
+</head>
+<body>
+
+<!-- ===== STORE SETUP ===== -->
+<div id="setupScreen" class="setup-screen">
+  <div class="setup-header">
+    <h1>店家設定</h1>
+    <p>設定您的分店寄件資訊</p>
+  </div>
+  <div class="container">
+    <div class="section">
+      <div class="section-title store"><span class="icon">&#9881;</span> 分店寄件資訊</div>
+      <div class="field">
+        <label>店家名稱</label>
+        <input type="text" id="storeName" placeholder="例：台中金典綠園道店">
+        <div class="error-msg">請填寫店家名稱</div>
+      </div>
+      <div class="field">
+        <label>店家電話（寄件人手機）</label>
+        <input type="tel" id="storePhone" placeholder="例：0983992393">
+        <div class="hint">此電話會填入宅配單的「寄件人手機」欄位</div>
+        <div class="error-msg">請填寫店家電話</div>
+      </div>
+      <div class="field">
+        <label>店家地址（寄件地址）</label>
+        <input type="text" id="storeAddr" placeholder="例：台中市西區健行路1049號3樓">
+        <div class="error-msg">請填寫店家地址</div>
+      </div>
+      <div class="field">
+        <label>Google Apps Script 網址</label>
+        <input type="url" id="storeScript" placeholder="https://script.google.com/macros/s/...">
+        <div class="hint">部署 Apps Script 後取得的網址</div>
+        <div class="error-msg">請填寫 Script 網址</div>
+      </div>
+
+      <div class="section-title store" style="margin-top:24px;"><span class="icon">&#128230;</span> 宅配限制條件</div>
+      <div class="field">
+        <label>每箱上限（盒數）</label>
+        <input type="number" id="storeMaxBoxes" min="1" value="20" inputmode="numeric" style="text-align:center;">
+        <div class="hint">超過此數量會自動拆成多張宅配單（預設 20 盒）</div>
+      </div>
+      <div class="field">
+        <label>可收件日（黑貓配送日）</label>
+        <div id="storeDaysCheckboxes" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px;padding:8px 14px;background:var(--cream);border:1.5px solid #E0D5C8;border-radius:10px;cursor:pointer;user-select:none;">
+            <input type="checkbox" value="1" style="width:auto;accent-color:var(--gold);"> 週一</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px;padding:8px 14px;background:var(--cream);border:1.5px solid #E0D5C8;border-radius:10px;cursor:pointer;user-select:none;">
+            <input type="checkbox" value="2" style="width:auto;accent-color:var(--gold);"> 週二</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px;padding:8px 14px;background:var(--cream);border:1.5px solid #E0D5C8;border-radius:10px;cursor:pointer;user-select:none;">
+            <input type="checkbox" value="3" checked style="width:auto;accent-color:var(--gold);"> 週三</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px;padding:8px 14px;background:var(--cream);border:1.5px solid #E0D5C8;border-radius:10px;cursor:pointer;user-select:none;">
+            <input type="checkbox" value="4" checked style="width:auto;accent-color:var(--gold);"> 週四</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px;padding:8px 14px;background:var(--cream);border:1.5px solid #E0D5C8;border-radius:10px;cursor:pointer;user-select:none;">
+            <input type="checkbox" value="5" checked style="width:auto;accent-color:var(--gold);"> 週五</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px;padding:8px 14px;background:var(--cream);border:1.5px solid #E0D5C8;border-radius:10px;cursor:pointer;user-select:none;">
+            <input type="checkbox" value="6" checked style="width:auto;accent-color:var(--gold);"> 週六</label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:14px;padding:8px 14px;background:var(--cream);border:1.5px solid #E0D5C8;border-radius:10px;cursor:pointer;user-select:none;">
+            <input type="checkbox" value="0" style="width:auto;accent-color:var(--gold);"> 週日</label>
+        </div>
+        <div class="hint">預設金典店為週三～週六，其他分店可依需求調整</div>
+      </div>
+
+      <button class="btn btn-setup" onclick="saveStoreSetup()">儲存並開始使用</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FORM VIEW ===== -->
+<div id="formView" style="display:none;">
+  <div class="header">
+    <div class="header-icon">&#127874;</div>
+    <h1>彌月禮盒 宅配單</h1>
+    <p>請填寫以下資訊，填完可預覽確認</p>
+    <div class="store-badge" id="storeBadge"></div>
+  </div>
+  <div class="store-bar active" id="storeBar">
+    <span class="store-info" id="storeBarInfo"></span>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <div class="section-title"><span class="icon">&#9993;</span> 寄件人資訊</div>
+      <div class="field">
+        <label>寄件人姓名</label>
+        <input type="text" id="senderName" placeholder="例：志明 & 春嬌">
+        <div class="error-msg">請填寫寄件人姓名</div>
+      </div>
+      <div class="field">
+        <label>寄件人電話</label>
+        <input type="tel" id="senderPhone" placeholder="例：0912345678">
+        <div class="hint">留主要聯絡人即可</div>
+        <div class="error-msg">請填寫寄件人電話</div>
+      </div>
+    </div>
+
+    <!-- Import -->
+    <div class="import-section">
+      <div class="import-title"><span class="icon">&#128196;</span> 大量匯入</div>
+      <div class="import-steps">
+        <span>Step 1</span> 下載範本（只有 6 欄，很簡單！）<br>
+        <span>Step 2</span> 填好後上傳，自動帶入所有收件人
+      </div>
+      <button class="btn-template" onclick="downloadTemplate()">下載範本 (.xlsx)</button>
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+        <p>點擊上傳 或 拖曳檔案到這裡</p>
+        <div class="sub">支援 .xlsx / .csv</div>
+        <input type="file" id="fileInput" accept=".xlsx,.csv" onchange="handleFileUpload(event)">
+      </div>
+      <div class="import-result" id="importResult"></div>
+    </div>
+
+    <div class="or-divider">或手動逐筆填寫</div>
+
+    <!-- Manual entry -->
+    <div class="section">
+      <div class="section-title"><span class="icon">&#128230;</span> 收件人資訊</div>
+      <div id="recipientList"></div>
+      <button class="btn btn-add" onclick="addRecipient()">+ 新增收件人</button>
+    </div>
+
+    <button class="btn btn-submit" id="btnSubmit" onclick="showReview()">預覽確認</button>
+  </div>
+</div>
+
+<!-- ===== REVIEW ===== -->
+<div class="overlay" id="reviewOverlay">
+  <div class="review-panel">
+    <div class="review-header">
+      <h2>請確認您的宅配資料</h2>
+      <p>確認無誤後按下「確認送出」</p>
+    </div>
+    <div class="review-scroll">
+      <div class="review-container" id="reviewContent"></div>
+    </div>
+    <div class="review-actions">
+      <button class="btn-back" onclick="closeReview()">返回修改</button>
+      <button class="btn-confirm" id="btnConfirm" onclick="submitToSheet()">確認送出</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SENDING ===== -->
+<div class="sending-overlay" id="sendingOverlay">
+  <div class="sending-box">
+    <div class="spinner"></div>
+    <p>資料傳送中...</p>
+  </div>
+</div>
+
+<!-- ===== SUCCESS ===== -->
+<div class="overlay" id="successOverlay">
+  <div class="review-panel">
+    <div class="success-screen">
+      <div class="checkmark">&#10003;</div>
+      <h2>宅配單已送出！</h2>
+      <p class="sub">我們已收到您的資料</p>
+
+      <div class="line-reminder">
+        <div class="lr-title">
+          <span class="lr-icon">L</span>
+          請記得通知我們
+        </div>
+        <div class="lr-steps">
+          <div class="lr-step">
+            <span class="lr-num">1</span>
+            <span>點下方按鈕到我們的<strong>官方 LINE</strong>，告知「宅配單已填寫完畢」</span>
+          </div>
+          <div class="lr-step">
+            <span class="lr-num">2</span>
+            <span>如果之後有<strong>追加或修改</strong>，也請再次透過 LINE 通知我們</span>
+          </div>
+        </div>
+      </div>
+
+      <a class="btn-line" href="https://lin.ee/yIva2Rj" target="_blank" rel="noopener">
+        <span class="line-logo">L</span>
+        開啟 LINE 通知我們
+      </a>
+
+      <button class="btn-add-more" onclick="confirmResetForMore()">我要追加收件人</button>
+      <button class="btn-new" onclick="confirmResetForm()">填寫全新一筆（不同寄件人）</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+var FLAVORS = [
+  { value: "", label: "請選擇口味" },
+  { value: "富貴原味", label: "富貴原味" },
+  { value: "德國起司", label: "德國起司" },
+  { value: "限量巧克力", label: "限量巧克力" },
+  { value: "成雙(原味&起司)", label: "成雙(原味&起司)" },
+  { value: "成雙(原味&巧克力)", label: "成雙(原味&巧克力)" },
+  { value: "成雙(起士&巧克力)", label: "成雙(起士&巧克力)" },
+  { value: "__other__", label: "其他（手動輸入）" },
+];
+
+var FIXED = { count:1, productCode:2, deliveryTime:1, tempLayer:2, sizeCode:1, productDesc:"彌月禮盒" };
+var storeConfig = { name:"", phone:"", addr:"", scriptUrl:"", maxBoxes:20, allowedDays:[3,4,5,6] };
+var recipientCount = 0;
+var DAY_NAMES = ["週日","週一","週二","週三","週四","週五","週六"];
+
+// ===== STORE =====
+function loadFromURL() {
+  var p = new URLSearchParams(window.location.search);
+  var s=p.get("store"), ph=p.get("phone"), a=p.get("addr"), u=p.get("script");
+  if (s && ph && a && u) {
+    var mb = parseInt(p.get("maxBoxes")) || 20;
+    var daysParam = p.get("days"); // e.g. "3,4,5,6"
+    var days = daysParam ? daysParam.split(",").map(Number) : [3,4,5,6];
+    storeConfig={name:s,phone:ph,addr:a,scriptUrl:u,maxBoxes:mb,allowedDays:days};
+    return true;
+  }
+  return false;
+}
+
+function saveStoreSetup() {
+  var name=document.getElementById("storeName").value.trim();
+  var phone=document.getElementById("storePhone").value.trim();
+  var addr=document.getElementById("storeAddr").value.trim();
+  var script=document.getElementById("storeScript").value.trim();
+  document.querySelectorAll("#setupScreen .field").forEach(function(f){f.classList.remove("has-error");});
+  var ok=true;
+  if(!name){document.getElementById("storeName").closest(".field").classList.add("has-error");ok=false;}
+  if(!phone){document.getElementById("storePhone").closest(".field").classList.add("has-error");ok=false;}
+  if(!addr){document.getElementById("storeAddr").closest(".field").classList.add("has-error");ok=false;}
+  if(!script){document.getElementById("storeScript").closest(".field").classList.add("has-error");ok=false;}
+  if(!ok) return;
+  // 讀取限制條件
+  var maxBoxes = parseInt(document.getElementById("storeMaxBoxes").value) || 20;
+  var allowedDays = [];
+  document.querySelectorAll("#storeDaysCheckboxes input[type=checkbox]:checked").forEach(function(cb){
+    allowedDays.push(parseInt(cb.value));
+  });
+  if(allowedDays.length===0){ alert("請至少勾選一天可收件日"); return; }
+  storeConfig={name:name,phone:phone,addr:addr,scriptUrl:script,maxBoxes:maxBoxes,allowedDays:allowedDays};
+  showForm();
+}
+
+function showForm() {
+  document.getElementById("setupScreen").style.display="none";
+  document.getElementById("formView").style.display="block";
+  document.getElementById("storeBadge").textContent=storeConfig.name;
+  document.getElementById("storeBarInfo").textContent=storeConfig.name+"  ·  "+storeConfig.phone;
+}
+
+// ===== RECIPIENTS =====
+function addRecipient() {
+  recipientCount++;
+  var n=recipientCount;
+  var div=document.createElement("div");
+  div.className="recipient-card";
+  div.id="recipient-"+n;
+  div.innerHTML=
+    '<div class="card-header">'+
+    '<span class="card-num">收件人 '+n+'</span>'+
+    (n>1?'<button class="btn-remove" onclick="removeRecipient('+n+')">刪除</button>':'')+
+    '</div>'+
+    '<div class="field"><label>姓名</label><input type="text" id="rName'+n+'" placeholder="收件人姓名"><div class="error-msg">請填寫姓名</div></div>'+
+    '<div class="field"><label>電話 / 手機</label><input type="tel" id="rPhone'+n+'" placeholder="例：0912345678"><div class="error-msg">請填寫電話</div></div>'+
+    '<div class="field"><label>地址</label><input type="text" id="rAddr'+n+'" placeholder="完整收件地址"><div class="error-msg">請填寫地址</div></div>'+
+    '<div class="field"><label>期望收件日期（選填）</label><input type="date" id="rDate'+n+'" style="color:var(--text);"><div class="hint">'+getDateHint()+'</div></div>'+
+    '<div class="flavor-row">'+
+    '<div class="field"><label>口味</label><select id="rFlavor'+n+'" onchange="onFlavorChange('+n+')">'+
+    FLAVORS.map(function(f){return '<option value="'+f.value+'">'+f.label+'</option>';}).join('')+
+    '</select><div class="custom-flavor" id="rCustom'+n+'"><input type="text" id="rCustomText'+n+'" placeholder="請輸入口味名稱"></div><div class="error-msg">請選擇口味</div></div>'+
+    '<div class="field"><label id="rQtyLabel'+n+'">盒數</label><input type="number" id="rQty'+n+'" min="1" value="1" inputmode="numeric" style="text-align:center;"></div>'+
+    '</div>';
+  document.getElementById("recipientList").appendChild(div);
+  initDateField(n);
+}
+
+function onFlavorChange(n) {
+  var sel=document.getElementById("rFlavor"+n).value;
+  var custom=document.getElementById("rCustom"+n);
+  var qtyLabel=document.getElementById("rQtyLabel"+n);
+  // 「其他」手動輸入
+  if(sel==="__other__"){custom.classList.add("active");document.getElementById("rCustomText"+n).focus();}
+  else{custom.classList.remove("active");}
+  // 成雙系列 → 單位改「組」，否則「盒」
+  if(sel.indexOf("成雙")===0){qtyLabel.textContent="組數";}
+  else{qtyLabel.textContent="盒數";}
+}
+
+function removeRecipient(n) {
+  var el=document.getElementById("recipient-"+n);
+  if(el)el.remove();
+  var cards=document.querySelectorAll("#recipientList .recipient-card");
+  cards.forEach(function(c,i){c.querySelector(".card-num").textContent="收件人 "+(i+1);});
+}
+
+function getRecipients() {
+  var cards=document.querySelectorAll("#recipientList .recipient-card");
+  var list=[];
+  cards.forEach(function(card){
+    var id=card.id.replace("recipient-","");
+    var flavor=document.getElementById("rFlavor"+id).value;
+    if(flavor==="__other__") flavor=document.getElementById("rCustomText"+id).value.trim();
+    var unit=flavor.indexOf("成雙")===0?"組":"盒";
+    var dateVal=document.getElementById("rDate"+id).value||"";
+    list.push({
+      id:id, flavor:flavor, unit:unit, date:dateVal,
+      name:document.getElementById("rName"+id).value.trim(),
+      phone:document.getElementById("rPhone"+id).value.trim(),
+      addr:document.getElementById("rAddr"+id).value.trim(),
+      qty:parseInt(document.getElementById("rQty"+id).value)||1
+    });
+  });
+  return list;
+}
+
+// ===== VALIDATION =====
+function validate() {
+  var ok=true;
+  document.querySelectorAll("#formView .field").forEach(function(f){f.classList.remove("has-error");});
+  var sN=document.getElementById("senderName"),sP=document.getElementById("senderPhone");
+  if(!sN.value.trim()){sN.closest(".field").classList.add("has-error");ok=false;}
+  if(!sP.value.trim()){sP.closest(".field").classList.add("has-error");ok=false;}
+  var rs=getRecipients();
+  if(!rs.length){alert("請至少新增一位收件人");return false;}
+  rs.forEach(function(r){
+    if(!r.name){document.getElementById("rName"+r.id).closest(".field").classList.add("has-error");ok=false;}
+    if(!r.phone){document.getElementById("rPhone"+r.id).closest(".field").classList.add("has-error");ok=false;}
+    if(!r.addr){document.getElementById("rAddr"+r.id).closest(".field").classList.add("has-error");ok=false;}
+    if(!r.flavor){document.getElementById("rFlavor"+r.id).closest(".field").classList.add("has-error");ok=false;}
+  });
+  if(!ok){var e=document.querySelector(".has-error");if(e)e.scrollIntoView({behavior:"smooth",block:"center"});}
+  return ok;
+}
+
+// ===== SPLIT LOGIC (依分店設定上限自動拆單) =====
+function splitRecipients(recipients) {
+  var maxBoxes = storeConfig.maxBoxes || 20;
+  var result = [];
+  recipients.forEach(function(r){
+    var boxesPerUnit = (r.unit==="組") ? 2 : 1;
+    var totalBoxes = r.qty * boxesPerUnit;
+    if(totalBoxes <= maxBoxes){
+      result.push(r);
+    } else {
+      var remaining = totalBoxes;
+      var partNum = 0;
+      var totalParts = Math.ceil(totalBoxes / maxBoxes);
+      while(remaining > 0){
+        partNum++;
+        var thisBoxes = Math.min(remaining, maxBoxes);
+        var thisQty = thisBoxes / boxesPerUnit;
+        var copy = {};
+        for(var k in r) copy[k] = r[k];
+        copy.qty = thisQty;
+        copy._split = true;
+        copy._partLabel = "第"+partNum+"箱／共"+totalParts+"箱";
+        result.push(copy);
+        remaining -= thisBoxes;
+      }
+    }
+  });
+  return result;
+}
+
+// ===== DATE HINT =====
+function getDateHint(){
+  var allowedStr = storeConfig.allowedDays.map(function(x){return DAY_NAMES[x];}).join("、");
+  return "不填則依店家安排出貨（僅限"+allowedStr+"收件）";
+}
+
+// ===== DATE VALIDATION (依分店設定限制可收件日) =====
+function initDateField(n) {
+  var input = document.getElementById("rDate"+n);
+  // 設定最早可選日期為明天
+  var tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate()+1);
+  input.min = formatDateISO(tomorrow);
+
+  input.addEventListener("change", function(){
+    if(!this.value) return;
+    var d = new Date(this.value+"T00:00:00");
+    var day = d.getDay(); // 0=日 ... 6=六
+    if(storeConfig.allowedDays.indexOf(day)===-1){
+      var allowedStr = storeConfig.allowedDays.map(function(x){return DAY_NAMES[x];}).join("、");
+      alert(DAY_NAMES[day]+"無法收件。\n\n本店可收件日為："+allowedStr);
+      this.value="";
+    }
+  });
+}
+
+function formatDateISO(d){
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
+// ===== REVIEW =====
+function showReview() {
+  if(!validate()) return;
+  var sN=document.getElementById("senderName").value.trim();
+  var sP=document.getElementById("senderPhone").value.trim();
+  var rs=getRecipients();
+  var expanded=splitRecipients(rs);
+
+  // 計算是否有拆單
+  var hasSplit = expanded.some(function(r){return r._split;});
+  var splitNote = hasSplit ? '<div style="background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;color:#F57F17;">⚠ 部分訂單超過 '+storeConfig.maxBoxes+' 盒，已自動拆成多張宅配單</div>' : '';
+
+  var html=
+    '<div class="review-sender">'+
+    '<div class="rc-row"><span class="rc-label">寄件人</span><span class="rc-value">'+sN+'</span></div>'+
+    '<div class="rc-row"><span class="rc-label">電話</span><span class="rc-value">'+sP+'</span></div>'+
+    '<div class="rc-row" style="margin-top:8px;padding-top:8px;border-top:1px solid #F0EBE4;">'+
+    '<span class="rc-label" style="color:#5c6bc0;">出貨店</span>'+
+    '<span class="rc-value" style="color:#5c6bc0;">'+storeConfig.name+'</span></div></div>'+
+    splitNote+
+    '<div class="count-label">共 '+expanded.length+' 張宅配單'+(hasSplit?' （原 '+rs.length+' 位收件人，拆單後 '+expanded.length+' 張）':'')+'</div>';
+
+  expanded.forEach(function(r,i){
+    var dateRow = r.date ? '<div class="rc-row"><span class="rc-label">期望日期</span><span class="rc-value">'+r.date.replace(/-/g,"/")+'</span></div>' : '';
+    var splitBadge = r._split ? '<span style="background:#FFF8E1;color:#F57F17;font-size:10px;padding:2px 8px;border-radius:10px;margin-left:8px;">'+r._partLabel+'</span>' : '';
+    html+=
+      '<div class="review-card"><div class="rc-num">宅配單 '+(i+1)+splitBadge+'</div>'+
+      '<div class="rc-row"><span class="rc-label">姓名</span><span class="rc-value">'+r.name+'</span></div>'+
+      '<div class="rc-row"><span class="rc-label">電話</span><span class="rc-value">'+r.phone+'</span></div>'+
+      '<div class="rc-row"><span class="rc-label">地址</span><span class="rc-value">'+r.addr+'</span></div>'+
+      '<div class="rc-row"><span class="rc-label">口味</span><span class="rc-value">'+r.flavor+' '+r.qty+r.unit+'</span></div>'+
+      dateRow+'</div>';
+  });
+  document.getElementById("reviewContent").innerHTML=html;
+  var container=document.getElementById("reviewContent");
+  if(expanded.length>5) container.classList.add("review-compact");
+  else container.classList.remove("review-compact");
+  document.getElementById("reviewOverlay").classList.add("active");
+  var scrollArea = document.querySelector(".review-scroll");
+  if(scrollArea) scrollArea.scrollTop=0;
+}
+
+function closeReview(){document.getElementById("reviewOverlay").classList.remove("active");}
+
+// ===== SUBMIT TO GOOGLE SHEET =====
+function submitToSheet() {
+  var btn=document.getElementById("btnConfirm");
+  btn.disabled=true;
+  btn.textContent="傳送中...";
+
+  document.getElementById("sendingOverlay").classList.add("active");
+
+  var payload={
+    senderName: document.getElementById("senderName").value.trim(),
+    senderPhone: document.getElementById("senderPhone").value.trim(),
+    storePhone: storeConfig.phone,
+    storeAddr: storeConfig.addr,
+    storeName: storeConfig.name,
+    recipients: splitRecipients(getRecipients())
+  };
+
+  fetch(storeConfig.scriptUrl, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload)
+  })
+  .then(function(){
+    document.getElementById("sendingOverlay").classList.remove("active");
+    document.getElementById("reviewOverlay").classList.remove("active");
+    document.getElementById("successOverlay").classList.add("active");
+    btn.disabled=false;
+    btn.textContent="確認送出";
+  })
+  .catch(function(err){
+    document.getElementById("sendingOverlay").classList.remove("active");
+    alert("傳送失敗，請稍後再試或聯繫店家。\n\n錯誤："+err.message);
+    btn.disabled=false;
+    btn.textContent="確認送出";
+  });
+}
+
+// ===== RESET =====
+function confirmResetForMore() {
+  if(confirm("確定要追加收件人嗎？\n（會保留寄件人資料，清空收件人重新填寫）")) resetForMore();
+}
+function confirmResetForm() {
+  if(confirm("確定要填寫全新一筆嗎？\n（會清空所有資料重新開始）")) resetForm();
+}
+
+function resetForMore() {
+  // 保留寄件人，只清收件人
+  document.getElementById("successOverlay").classList.remove("active");
+  document.getElementById("recipientList").innerHTML="";
+  recipientCount=0;
+  addRecipient();
+  window.scrollTo(0,0);
+}
+
+function resetForm() {
+  document.getElementById("successOverlay").classList.remove("active");
+  document.getElementById("senderName").value="";
+  document.getElementById("senderPhone").value="";
+  document.getElementById("recipientList").innerHTML="";
+  recipientCount=0;
+  addRecipient();
+  window.scrollTo(0,0);
+}
+
+// ===== TEMPLATE & IMPORT =====
+function downloadTemplate() {
+  var wb = XLSX.utils.book_new();
+  var note = [["只需填寫下方 6 欄，第 2~3 列是範例，可直接刪除後填入您的資料"]];
+  var header = [["姓名","電話","地址","口味","數量","期望收件日期"]];
+  var example = [
+    ["王小明","0912345678","台北市大安區忠孝東路100號","富貴原味",2,""],
+    ["李小花","02-27001234","高雄市左營區重清路50號","成雙(原味&起司)",1,"2026/04/15"]
+  ];
+  var flavorNote = [[""],["口味選項：富貴原味 / 德國起司 / 限量巧克力 / 成雙(原味&起司) / 成雙(原味&巧克力) / 成雙(起士&巧克力)"]];
+  var dateNote = [["期望收件日期可不填，不填則依店家安排出貨"]];
+  var ws = XLSX.utils.aoa_to_sheet(note.concat(header, example, [[""]], flavorNote, dateNote));
+  ws["!cols"] = [{wch:12},{wch:14},{wch:38},{wch:24},{wch:6},{wch:16}];
+  // Style note row
+  XLSX.utils.book_append_sheet(wb, ws, "收件人");
+  XLSX.writeFile(wb, "宅配收件人範本.xlsx");
+}
+
+// Drag & drop
+var uploadArea = null;
+document.addEventListener("DOMContentLoaded", function(){
+  uploadArea = document.getElementById("uploadArea");
+  if(!uploadArea) return;
+  uploadArea.addEventListener("dragover", function(e){ e.preventDefault(); uploadArea.classList.add("dragover"); });
+  uploadArea.addEventListener("dragleave", function(){ uploadArea.classList.remove("dragover"); });
+  uploadArea.addEventListener("drop", function(e){
+    e.preventDefault(); uploadArea.classList.remove("dragover");
+    if(e.dataTransfer.files.length) processFile(e.dataTransfer.files[0]);
+  });
+});
+
+function handleFileUpload(e) {
+  if(e.target.files.length) processFile(e.target.files[0]);
+  e.target.value = "";
+}
+
+var FLAVOR_VALUES = FLAVORS.map(function(f){return f.value;}).filter(function(v){return v && v!=="__other__";});
+
+function matchFlavor(input) {
+  if(!input) return {flavor:"", isOther:false};
+  var t = input.trim();
+  for(var i=0; i<FLAVOR_VALUES.length; i++){
+    if(t === FLAVOR_VALUES[i]) return {flavor:FLAVOR_VALUES[i], isOther:false};
+  }
+  // Fuzzy match
+  for(var i=0; i<FLAVOR_VALUES.length; i++){
+    if(t.indexOf(FLAVOR_VALUES[i])>=0 || FLAVOR_VALUES[i].indexOf(t)>=0) return {flavor:FLAVOR_VALUES[i], isOther:false};
+  }
+  return {flavor:t, isOther:true};
+}
+
+function processFile(file) {
+  var result = document.getElementById("importResult");
+  var ext = file.name.split(".").pop().toLowerCase();
+  if(ext!=="xlsx" && ext!=="csv"){
+    result.className="import-result active error";
+    result.textContent="不支援的格式，請上傳 .xlsx 或 .csv 檔案";
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      var wb = XLSX.read(e.target.result, {type:"array"});
+      var ws = wb.Sheets[wb.SheetNames[0]];
+      var data = XLSX.utils.sheet_to_json(ws, {header:1});
+
+      // Skip note/header rows - find the first row that looks like a header
+      var startRow = 0;
+      for(var h=0; h<Math.min(data.length,5); h++){
+        var cell = String(data[h]&&data[h][0]||"").trim();
+        if(cell==="姓名"||cell==="收件人"||cell==="收件人姓名"||cell==="name"){
+          startRow=h+1; break;
+        }
+      }
+      // If no header found, check if first row looks like instruction text
+      if(startRow===0 && data.length>0){
+        var first=String(data[0][0]||"").trim();
+        if(first.length>10 || first.indexOf("填寫")>=0 || first.indexOf("只需")>=0) startRow=1;
+      }
+
+      var imported = 0;
+      // Clear existing recipients
+      document.getElementById("recipientList").innerHTML="";
+      recipientCount=0;
+
+      for(var i=startRow; i<data.length; i++){
+        var row=data[i];
+        if(!row || !row[0]) continue; // skip empty rows
+        var name=String(row[0]||"").trim();
+        var phone=String(row[1]||"").trim();
+        var addr=String(row[2]||"").trim();
+        var flavorInput=String(row[3]||"").trim();
+        var qty=parseInt(row[4])||1;
+        var dateRaw=row[5]||"";
+
+        if(!name) continue;
+        // Skip rows that look like notes (口味選項, 期望收件日期可不填, etc.)
+        if(name.indexOf("口味選項")>=0 || name.indexOf("期望")>=0) continue;
+
+        addRecipient();
+        var n=recipientCount;
+        document.getElementById("rName"+n).value=name;
+        document.getElementById("rPhone"+n).value=phone;
+        document.getElementById("rAddr"+n).value=addr;
+        document.getElementById("rQty"+n).value=qty;
+
+        // Parse date
+        if(dateRaw){
+          var ds=String(dateRaw).trim();
+          // Handle YYYY/MM/DD or YYYY-MM-DD
+          ds=ds.replace(/\//g,"-");
+          // Handle Excel serial date
+          if(!isNaN(ds) && parseInt(ds)>40000){
+            var d=new Date((parseInt(ds)-25569)*86400000);
+            ds=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+          }
+          if(ds.match(/^\d{4}-\d{1,2}-\d{1,2}$/)){
+            var parts=ds.split("-");
+            ds=parts[0]+"-"+parts[1].padStart(2,"0")+"-"+parts[2].padStart(2,"0");
+            document.getElementById("rDate"+n).value=ds;
+          }
+        }
+
+        var fm = matchFlavor(flavorInput);
+        if(fm.isOther){
+          document.getElementById("rFlavor"+n).value="__other__";
+          onFlavorChange(n);
+          document.getElementById("rCustomText"+n).value=fm.flavor;
+        } else if(fm.flavor) {
+          document.getElementById("rFlavor"+n).value=fm.flavor;
+          onFlavorChange(n);
+        }
+
+        // initDateField is already called inside addRecipient()
+
+        imported++;
+      }
+
+      if(imported>0){
+        result.className="import-result active";
+        result.textContent="成功匯入 "+imported+" 筆收件人資料！請往下確認";
+        // Scroll to recipients
+        document.getElementById("recipientList").scrollIntoView({behavior:"smooth",block:"start"});
+      } else {
+        result.className="import-result active error";
+        result.textContent="檔案中沒有找到有效的收件人資料，請確認格式";
+      }
+    } catch(err){
+      result.className="import-result active error";
+      result.textContent="讀取檔案失敗："+err.message;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ===== INIT =====
+if(loadFromURL()){showForm();}
+else{document.getElementById("setupScreen").style.display="block";document.getElementById("setupScreen").classList.add("active");}
+addRecipient();
+</script>
+</body>
+</html>
