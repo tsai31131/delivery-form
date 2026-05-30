@@ -2,9 +2,37 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>彌月禮盒 宅配單填寫</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>彌月禮盒宅配單填寫 | TrueCake 真蛋糕</title>
+<meta name="description" content="TrueCake 真蛋糕 彌月禮盒線上宅配單填寫系統。支援多筆收件人、Excel 大量匯入、自動拆單與黑貓宅配指定到貨日，手機即可快速完成填寫。">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#6B5240">
+<link rel="canonical" href="https://truecake.com.tw/">
+
+<!-- Open Graph / LINE / Facebook 分享預覽 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TrueCake 真蛋糕">
+<meta property="og:title" content="彌月禮盒宅配單填寫 | TrueCake 真蛋糕">
+<meta property="og:description" content="線上填寫彌月禮盒宅配單，支援多筆收件人與 Excel 大量匯入，手機即可快速完成。">
+<meta property="og:url" content="https://truecake.com.tw/">
+<meta property="og:locale" content="zh_TW">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="彌月禮盒宅配單填寫 | TrueCake 真蛋糕">
+<meta name="twitter:description" content="線上填寫彌月禮盒宅配單，支援多筆收件人與 Excel 大量匯入，手機即可快速完成。">
+
+<!-- Favicon（內嵌，免額外請求） -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%82%3C/text%3E%3C/svg%3E">
+
+<!-- 提前連線，加速字型與函式庫載入 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<!-- 品牌結構化資料 -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","name":"TrueCake 真蛋糕","url":"https://truecake.com.tw/","description":"彌月禮盒專賣，提供線上宅配單填寫與黑貓宅配到府服務。"}
+</script>
 <style>
 :root {
 --gold: #B8860B;
@@ -718,8 +746,26 @@ font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer;
 </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
+// ===== XLSX 函式庫：僅在下載範本或匯入檔案時才載入（約 900KB，平時填單不需下載） =====
+var _xlsxPromise = null;
+function ensureXLSX(onReady) {
+if (window.XLSX) { onReady(); return; }
+if (!_xlsxPromise) {
+_xlsxPromise = new Promise(function(resolve, reject){
+var s = document.createElement("script");
+s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
+s.onload = resolve;
+s.onerror = reject;
+document.head.appendChild(s);
+});
+}
+_xlsxPromise.then(onReady).catch(function(){
+_xlsxPromise = null; // 允許下次重試
+showAlert("匯入工具載入失敗，請確認網路連線後再試一次。", "載入失敗");
+});
+}
+
 var FLAVORS = [
 { value: "", label: "請選擇口味" },
 { value: "富貴原味", label: "富貴原味" },
@@ -1098,6 +1144,9 @@ window.scrollTo(0,0);
 
 // ===== TEMPLATE & IMPORT =====
 function downloadTemplate() {
+ensureXLSX(function(){ buildTemplate(); });
+}
+function buildTemplate() {
 var wb = XLSX.utils.book_new();
 var note = [["只需填寫下方 6 欄，第 2~3 列是範例，可直接刪除後填入您的資料"]];
 var header = [["姓名","電話","地址","口味","數量","期望收件日期"]];
@@ -1119,6 +1168,10 @@ var uploadArea = null;
 document.addEventListener("DOMContentLoaded", function(){
 uploadArea = document.getElementById("uploadArea");
 if(!uploadArea) return;
+// 使用者一接近匯入區就先暖身載入 XLSX，挑好檔案時幾乎無需等待
+var warm = function(){ ensureXLSX(function(){}); };
+uploadArea.addEventListener("pointerenter", warm, { once:true });
+uploadArea.addEventListener("touchstart", warm, { once:true, passive:true });
 uploadArea.addEventListener("dragover", function(e){ e.preventDefault(); uploadArea.classList.add("dragover"); });
 uploadArea.addEventListener("dragleave", function(){ uploadArea.classList.remove("dragover"); });
 uploadArea.addEventListener("drop", function(e){
@@ -1158,6 +1211,7 @@ return;
 
 var reader = new FileReader();
 reader.onload = function(e){
+ensureXLSX(function(){
 try {
 var wb = XLSX.read(e.target.result, {type:"array"});
 var ws = wb.Sheets[wb.SheetNames[0]];
@@ -1246,6 +1300,7 @@ result.textContent="檔案中沒有找到有效的收件人資料，請確認格
 result.className="import-result active error";
 result.textContent="讀取檔案失敗："+err.message;
 }
+}); // ensureXLSX
 };
 reader.readAsArrayBuffer(file);
 }
